@@ -29,7 +29,4 @@ jobs:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           external_repository: fabiocarballo/fabiocarballo.github.io
           publish_branch: main
-          # Without `keep_files` the `CNAME` file in the target repo will get removed
-          # and the custom domain configured for GitHub pages will get dropped every
-          # time the action runs…
-          keep_files: true
+          publish_dir: ./public
