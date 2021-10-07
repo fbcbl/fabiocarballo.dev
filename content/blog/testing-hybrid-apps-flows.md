@@ -4,7 +4,7 @@ date: 2021-10-07T11:17:22+02:00
 slug: "Testing Hybrid App Flows"
 description: "Use emptyComposeRule to test your hybrid app"
 keywords: ["android", "compose", "testing", "jetpack", "emptyComposeRule"]
-draft: true
+draft: false
 tags: ["Compose", "Testing"]
 math: false
 toc: false
