@@ -134,3 +134,4 @@ I hope this scenario provided you with an example of why domain modeling is very
 For more on this topic:
 - [Domain Modeling Made Functional](https://fsharpforfunandprofit.com/books/)
 - [Deep Models](https://marcellogalhardo.dev/posts/2021/10/07/deep-models/)
+- [Modelling UI State on Android](https://dev.to/s_anastasov/modelling-ui-state-on-android-2d8o)
