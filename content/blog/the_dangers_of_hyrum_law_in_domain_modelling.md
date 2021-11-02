@@ -1,5 +1,5 @@
 ---
-title: "How bad domain modeling relates to Hyrum's Law"
+title: "The relationship between bad domain modeling and Hyrum's Law"
 date: 2021-10-27T13:18:20+02:00
 slug: ""
 description: ""
