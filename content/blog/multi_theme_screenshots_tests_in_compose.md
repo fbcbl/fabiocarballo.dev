@@ -45,7 +45,10 @@ class TypographyTest {
    fun paragraph() {
        composeTestRule.setContent {
           Theme {
-              Text(text = "This is a paragraph.", style = Theme.typography.paragraph)
+              Text(
+              	 text = "This is a paragraph.", 
+                 style = Theme.typography.paragraph
+              )
            }
        }
     
@@ -93,17 +96,26 @@ class TypographyTest: DesignSystemScreenshotTest() {
     
     @Test
     fun paragraph() = runScreenshotTest {
-       Text(text = "This is a paragraph.", style = Theme.typography.paragraph)
+       Text(
+       	  text = "This is a paragraph.", 
+       	  style = Theme.typography.paragraph
+       )
     }
 
     @Test
     fun label() = runScreenshotTest {
-        Text(text = "This is a label.", style = Theme.typography.label)
+        Text(
+           text = "This is a label.", 
+           style = Theme.typography.label
+        )
     }
 
     @Test
     fun display() = runScreenshotTest {
-        Text(text = "This is a display.", style = Theme.typography.display)
+        Text(
+            text = "This is a display.", 
+            style = Theme.typography.display
+        )
     }
 }
 ```
