@@ -1,5 +1,5 @@
 ---
-title: "Multi-Theme Screenshots in Jetpack Compose"
+title: "Multi-Theme Screenshot Testing in Jetpack Compose"
 date: 2021-11-06T17:44:01+01:00
 slug: "Scale up your screenshot testing."
 description: ""
