@@ -10,10 +10,10 @@ math: false
 toc: false
 ---
 
-I have been working a lot with a design system and one of the recent challenges was to add support to screenshot testing while making it easy to scale for
-several different themes. In my vision, we would be able to only write one single test, but automatically generate the screenshots for all the themes in one single run
+I have been working a lot with a design system, and one of the recent challenges was to add support to screenshot testing while making it easy to scale for
+several different themes. In my vision, we would be able only to write one single test, but automatically generate the screenshots for all the themes in one single run.
 
-Meanwhile, I reached a solution that can be seen in this sample project created for this purpose. In this project, we have a really simple design system and we can see an example of how to generate screenshot tests that will verify the system's Typography in both _Light_ and _Dark_ theme. 
+Meanwhile, I reached a solution that can be seen in this [sample project](https://github.com/fabiocarballo/compose-design-system) created for this purpose. In this project, we have a simple design system and we can see an example of how to generate screenshot tests that will verify the system's Typography in both _Light_ and _Dark_ theme. 
 
 <br/>
 
@@ -21,7 +21,7 @@ Meanwhile, I reached a solution that can be seen in this sample project created 
 |---|---| 
 |  ![com fabiocarballo designsystem TypographyTest_com fabiocarballo designsystem TypographyTest_label_light](https://user-images.githubusercontent.com/6845042/140617048-d7b5d3b6-3372-49d1-a336-ea748a3ff52b.png) | ![com fabiocarballo designsystem TypographyTest_com fabiocarballo designsystem TypographyTest_label_dark](https://user-images.githubusercontent.com/6845042/140617040-a80f60de-5869-4b2b-a860-b035c5e69955.png) | 
 
-P.s - if you want to look into the code you can look at this specific [PR](https://github.com/fabiocarballo/compose-design-system/pull/1) where I add the multi-theme screenshot support.
+P.s - if you want to look into the code, you can look at this specific [PR](https://github.com/fabiocarballo/compose-design-system/pull/1) where I add the multi-theme screenshot support.
 
 Let's go step by step of what was the thought process into getting into the final solution:
 
@@ -57,7 +57,7 @@ class TypographyTest {
 }
 ```
 
-By doing this we then have a screenshot generated in our module under `app/screenshots/com.fabiocarballo.designsystem.TypographyTest.label`
+We then have a screenshot generated in our module under `app/screenshots/com.fabiocarballo.designsystem.TypographyTest.label`
 
 ![com fabiocarballo designsystem TypographyTest_com fabiocarballo designsystem TypographyTest_paragraph_light](https://user-images.githubusercontent.com/6845042/140614050-73d4d21b-a64d-4865-8c04-c91ea574f18a.png)
 
@@ -88,7 +88,7 @@ abstract class DesignSystemScreenshotTest: ScreenshotTest {
 }
 ```
 
-You can see that all the structure was then passed into this `abstract class` that every test class should extend.  Another point to note is that all content should be run under the scope of this `runScreenshotTest`. Let's see how our `TypographyTest` would look like now:
+You can see that all the structure was then passed into this `abstract class` that every test class should extend. Another point to note is that all content should be run under the scope of this `runScreenshotTest`. Let's see how our `TypographyTest` would look like now:
 
 
 ```kotlin
@@ -120,7 +120,7 @@ class TypographyTest: DesignSystemScreenshotTest() {
 }
 ```
 
-The goal here was to make a test being almost as easy as just declare the composable that should be screenshotted.
+The goal was to make a test being almost as easy as just declaring the composable that should be screenshotted.
 
 By now, our screenshots would be:
 
@@ -130,7 +130,7 @@ By now, our screenshots would be:
 
 ## 3. Add support to multi-theme
 
-At this point, we have now the capability to easily generate our screenshots for our _Light Theme_. As a next step, we want to use the same codebase and automatically generate screenshots also to _Dark Theme_.
+At this point, we now can quickly generate screenshots for our _Light Theme_. As a next step, we want to use the same codebase and automatically generate screenshots also to _Dark Theme_.
 
 For that, we are going to enrich our `DesignSystemScreenshotTest` with the capability to run parameterized tests. Hence, we are using [Test Parameter Injector](https://github.com/google/TestParameterInjector) to build the parameterized behavior.
 
@@ -174,32 +174,14 @@ abstract class DesignSystemScreenshotTest : ScreenshotTest {
 
 However, we still have one small problem: `Shot` default behavior is to name the screenshot as _"ClassName_MethodName"_. This way, we record the screenshots for the test in both modes, but the last run always overrides the first one.
 
-To fix that, we are going to generate the screenshot name by ourselves with the help of this helper method:
+To fix that, we are going to generate the screenshot name by ourselves with the help of the `TestName` rule from junit (thanks [Ahmed Abdelmeged](https://twitter.com/A_K_Abd_Elmeged) for the tip!!):
 
 ```kotlin
-private fun extractClassAndMethodName(): String {
-    val stack = Throwable().stackTrace
-
-    stack.forEach { element ->
-        try {
-            val clazz = Class.forName(element.className)
-            val method = clazz.getMethod(element.methodName)
-
-            if (method.annotations.any { it.annotationClass == Test::class }) {
-                return "${clazz.canonicalName}_${method.name}"
-            }
-        } catch (ignored: NoSuchMethodException) {
-            // do nothing
-        } catch (ignored: ClassNotFoundException) {
-            // do nothing
-        }
-    }
-
-    error("Couldn't parse the name")
-}
+@get:Rule
+val testNameRule = TestName()
 ```
 
-This method will simply use the `StackTrace` to figure out what is the test class and method name. We can then use this information together with the `ThemeMode` that is being used for the test to generate a test name as:
+We can then use this information together with the `ThemeMode` that is being used for the test to generate a test name as:
 
 - _TypographyTest_paragraph_light_
 - _TypographyTest_paragraph_dark_
@@ -212,6 +194,9 @@ abstract class DesignSystemScreenshotTest : ScreenshotTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
+
+    @get:Rule
+    val testNameRule = TestName()
 
     @TestParameter
     private lateinit var themeMode: ThemeMode
@@ -227,7 +212,7 @@ abstract class DesignSystemScreenshotTest : ScreenshotTest {
             )
         }
 
-        val name = "${extractClassAndMethodName()}_${themeMode.name.lowercase()}"
+        val name = "${testNameRule.methodName}_${themeMode.name.lowercase()}"
 
         compareScreenshot(
             rule = composeTestRule,
